@@ -1,0 +1,11 @@
+create database usuarios;
+use usuarios;
+create table Usuarios (
+id int auto_increment primary key not null,
+nombre varchar(50),
+contraseña nvarchar(50)
+);
+
+insert into Usuarios(nombre, contraseña) values ('admin','contra1234');
+select * from Usuarios;
+SELECT * FROM usuarios WHERE nombre = 'admin' AND contraseña = 'contra1234';

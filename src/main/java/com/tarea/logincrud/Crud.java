@@ -6,7 +6,9 @@ package com.tarea.logincrud;
 
 import Clases.UsuarioDAO;
 import Clases.UsuarioDTO;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,9 +20,11 @@ public class Crud extends javax.swing.JFrame {
      * Creates new form Crud
      */
     UsuarioDAO usuarioDAO = new UsuarioDAO();
+
     public Crud() {
         initComponents();
-        
+        listarUsuarios();
+        btnListar.addActionListener(e -> listarUsuarios());
     }
 
     /**
@@ -39,10 +43,12 @@ public class Crud extends javax.swing.JFrame {
         txtPass = new javax.swing.JTextField();
         btnCrear = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
-        btnBuscar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtId = new javax.swing.JTextField();
         btnBorrar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        miTabla = new javax.swing.JTable();
+        btnListar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,15 +88,7 @@ public class Crud extends javax.swing.JFrame {
                 btnActualizarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 170, -1, -1));
-
-        btnBuscar.setText("Buscar");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
-        jPanel1.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 30, -1, -1));
+        jPanel1.add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, -1, -1));
 
         jLabel3.setText("ID");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, -1, -1));
@@ -103,7 +101,40 @@ public class Crud extends javax.swing.JFrame {
         jPanel1.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 30, 60, -1));
 
         btnBorrar.setText("Borrar");
-        jPanel1.add(btnBorrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 170, -1, -1));
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnBorrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 170, -1, -1));
+
+        miTabla.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Contraseña"
+            }
+        ));
+        jScrollPane1.setViewportView(miTabla);
+        if (miTabla.getColumnModel().getColumnCount() > 0) {
+            miTabla.getColumnModel().getColumn(0).setResizable(false);
+            miTabla.getColumnModel().getColumn(1).setResizable(false);
+            miTabla.getColumnModel().getColumn(2).setResizable(false);
+        }
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 380, 120));
+
+        btnListar.setText("Listar");
+        btnListar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnListar, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 170, -1, -1));
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -119,26 +150,108 @@ public class Crud extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPassActionPerformed
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-        UsuarioDTO usuario = new UsuarioDTO(0, txtNom.getText(), txtPass.getText());
+        if (txtNom.getText().isEmpty() || txtPass.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos");
+            return;
+        }
 
-        if (usuarioDAO.insertarUsuario(usuario)) {
-            JOptionPane.showMessageDialog(null, "Usuario registrado con éxito");
-        } else {
-            JOptionPane.showMessageDialog(null, "Error al registrar usuario");
-}
+        try {
+            String nombre = txtNom.getText();
+            String pass = txtPass.getText();
+
+            // Aseguramos que el nombre no esté vacío
+            if (nombre.isEmpty() || pass.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
+                return;
+            }
+
+            // Creamos el usuario
+            UsuarioDTO usuario = new UsuarioDTO(0, nombre, pass); // Asumimos que el ID se genera automáticamente en la BD
+
+            // Verificamos si el usuario ya existe (esto es opcional pero útil)
+            if (usuarioDAO.existeUsuario(nombre)) {
+                JOptionPane.showMessageDialog(null, "El usuario ya existe");
+                return;
+            }
+
+            // Intentamos insertar el usuario
+            if (usuarioDAO.insertarUsuario(usuario)) {
+                JOptionPane.showMessageDialog(null, "Usuario creado correctamente");
+                listarUsuarios(); // Actualiza la tabla de usuarios
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al crear el usuario");
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Error en la creación: " + ex.getMessage());
+        }
+
+        limpiarCampos();
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnActualizarActionPerformed
+        if (txtId.getText().isEmpty() && txtNom.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese ID o nombre para actualizar");
+            return;
+        }
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarActionPerformed
+        try {
+            int id = txtId.getText().isEmpty() ? -1 : Integer.parseInt(txtId.getText());
+            String nombre = txtNom.getText();
+            String pass = txtPass.getText();
+
+            if (nombre.isEmpty() || pass.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos");
+                return;
+            }
+
+            UsuarioDTO usuario = new UsuarioDTO(id, nombre, pass);
+
+            if (usuarioDAO.actualizarUsuarioPorIdONombre(usuario)) {
+                JOptionPane.showMessageDialog(null, "Usuario actualizado correctamente");
+                listarUsuarios(); // Actualiza la tabla
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró el usuario o no se pudo actualizar");
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "ID no válido");
+        }
+
+        limpiarCampos();
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtIdActionPerformed
+
+    private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
+
+    }//GEN-LAST:event_btnListarActionPerformed
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        if (txtId.getText().isEmpty() && txtNom.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese ID o nombre para eliminar");
+            return;
+        }
+
+        try {
+            int id = txtId.getText().isEmpty() ? -1 : Integer.parseInt(txtId.getText());
+            String nombre = txtNom.getText();
+
+            if (usuarioDAO.eliminarUsuarioPorIdONombre(id, nombre)) {
+                JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente");
+                listarUsuarios(); // Actualiza la tabla
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró el usuario o no se pudo eliminar");
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "ID inválido");
+        }
+
+        limpiarCampos();
+    }//GEN-LAST:event_btnBorrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -175,15 +288,35 @@ public class Crud extends javax.swing.JFrame {
         });
     }
 
+    public void listarUsuarios() {
+        DefaultTableModel modelo = (DefaultTableModel) miTabla.getModel();
+        modelo.setRowCount(0); // limpia la tabla
+
+        UsuarioDAO dao = new UsuarioDAO();
+        List<UsuarioDTO> lista = dao.obtenerUsuarios();
+
+        for (UsuarioDTO u : lista) {
+            modelo.addRow(new Object[]{u.getId(), u.getNombre(), u.getContraseña()});
+        }
+    }
+
+    public void limpiarCampos() {
+        txtId.setText("");
+        txtNom.setText("");
+        txtPass.setText("");
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnBorrar;
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCrear;
+    private javax.swing.JButton btnListar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable miTabla;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtNom;
     private javax.swing.JTextField txtPass;
