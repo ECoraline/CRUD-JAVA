@@ -15,8 +15,8 @@ import javax.swing.JOptionPane;
 public class Conexion {
     Connection conectar;
     
-    String usuario = System.getenv("MYSQL_USER");
-    String contra = System.getenv("MYSQL_PASSWORD");
+    String usuario = "root";
+    String contra = System.getenv("DB_PASSWORD");
     String db = "usuarios";
     String ip = "localhost";
     String puerto = "3306";

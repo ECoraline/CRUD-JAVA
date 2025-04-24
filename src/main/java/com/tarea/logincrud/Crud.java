@@ -41,7 +41,6 @@ public class Crud extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtNom = new javax.swing.JTextField();
         txtPass = new javax.swing.JTextField();
-        btnCrear = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtId = new javax.swing.JTextField();
@@ -49,13 +48,14 @@ public class Crud extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         miTabla = new javax.swing.JTable();
         btnListar = new javax.swing.JButton();
+        btnCrear = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setText("Contraseña: ");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 70, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 70, -1));
 
         jLabel1.setText("Nombre: ");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 60, -1));
@@ -72,15 +72,7 @@ public class Crud extends javax.swing.JFrame {
                 txtPassActionPerformed(evt);
             }
         });
-        jPanel1.add(txtPass, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 120, 110, -1));
-
-        btnCrear.setText("Crear");
-        btnCrear.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCrearActionPerformed(evt);
-            }
-        });
-        jPanel1.add(btnCrear, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, -1, -1));
+        jPanel1.add(txtPass, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 130, 110, -1));
 
         btnActualizar.setText("Actualizar");
         btnActualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -88,17 +80,17 @@ public class Crud extends javax.swing.JFrame {
                 btnActualizarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, -1, -1));
+        jPanel1.add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 170, -1, -1));
 
         jLabel3.setText("ID");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
 
         txtId.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIdActionPerformed(evt);
             }
         });
-        jPanel1.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 30, 60, -1));
+        jPanel1.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 30, 110, -1));
 
         btnBorrar.setText("Borrar");
         btnBorrar.addActionListener(new java.awt.event.ActionListener() {
@@ -106,7 +98,7 @@ public class Crud extends javax.swing.JFrame {
                 btnBorrarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnBorrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 170, -1, -1));
+        jPanel1.add(btnBorrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 170, -1, -1));
 
         miTabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -126,7 +118,7 @@ public class Crud extends javax.swing.JFrame {
             miTabla.getColumnModel().getColumn(2).setResizable(false);
         }
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 380, 120));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 400, 120));
 
         btnListar.setText("Listar");
         btnListar.addActionListener(new java.awt.event.ActionListener() {
@@ -134,7 +126,17 @@ public class Crud extends javax.swing.JFrame {
                 btnListarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnListar, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 170, -1, -1));
+        jPanel1.add(btnListar, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 170, -1, -1));
+
+        btnCrear.setText("Registrar");
+        btnCrear.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCrear.setOpaque(true);
+        btnCrear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCrearActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnCrear, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 100, -1));
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
