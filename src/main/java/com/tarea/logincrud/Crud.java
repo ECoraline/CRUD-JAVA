@@ -6,8 +6,6 @@ package com.tarea.logincrud;
 
 import Clases.AlumnoDAO;
 import Clases.AlumnoDTO;
-import Clases.UsuarioDAO;
-import Clases.UsuarioDTO;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JOptionPane;
