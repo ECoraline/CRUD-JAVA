@@ -6,6 +6,18 @@ nombre varchar(50),
 contraseña nvarchar(50)
 );
 
-insert into Usuarios(nombre, contraseña) values ('admin','contra1234');
+insert into Usuarios(nombre, contraseña) values ('admin','contra1234');//usuario predeterminado para login
 select * from Usuarios;
 SELECT * FROM usuarios WHERE nombre = 'admin' AND contraseña = 'contra1234';
+
+//tabla alumnos
+
+CREATE TABLE alumnos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    promedio DOUBLE NOT NULL
+);
+
+use usuarios;
+
+select * from alumnos;
