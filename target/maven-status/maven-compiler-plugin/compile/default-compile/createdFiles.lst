@@ -3,6 +3,8 @@ com\tarea\logincrud\Crud.class
 com\tarea\logincrud\Crud$3.class
 com\tarea\logincrud\Crud$4.class
 com\tarea\logincrud\LoginCrud.class
+Clases\AlumnoDTO.class
+Clases\AlumnoDAO.class
 com\tarea\logincrud\Crud$8.class
 Clases\UsuarioDAO.class
 com\tarea\logincrud\Crud$5.class
@@ -14,3 +16,4 @@ com\tarea\logincrud\Crud$1.class
 Clases\Conexion.class
 com\tarea\logincrud\Crud$2.class
 com\tarea\logincrud\Crud$7.class
+com\tarea\logincrud\FormLogin$3.class

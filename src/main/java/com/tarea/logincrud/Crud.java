@@ -8,6 +8,7 @@ import Clases.AlumnoDAO;
 import Clases.AlumnoDTO;
 import Clases.UsuarioDAO;
 import Clases.UsuarioDTO;
+import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -27,6 +28,7 @@ public class Crud extends javax.swing.JFrame {
         initComponents();
         listarAlumnos();
         btnListar.addActionListener(e -> listarAlumnos());
+        this.setTitle("GESTION DE ALUMNOS");
     }
 
     /**
@@ -220,7 +222,31 @@ public class Crud extends javax.swing.JFrame {
     }//GEN-LAST:event_btnListarActionPerformed
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
-        
+        String idTexto = txtId.getText().trim();
+
+        if (idTexto.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingresa el ID del alumno a eliminar.", "Campo vacío", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas eliminar este alumno?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            int id = Integer.parseInt(idTexto);
+            AlumnoDAO alumnoDAO = new AlumnoDAO();
+            alumnoDAO.eliminar(id);
+
+            JOptionPane.showMessageDialog(this, "Alumno eliminado correctamente.");
+            limpiarCampos(); // Método que debes tener para limpiar los campos del formulario
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El ID debe ser un número válido.", "Error de formato", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al eliminar el alumno: " + e.getMessage(), "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     /**
