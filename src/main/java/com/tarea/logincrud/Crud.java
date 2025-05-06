@@ -4,6 +4,8 @@
  */
 package com.tarea.logincrud;
 
+import Clases.AlumnoDAO;
+import Clases.AlumnoDTO;
 import Clases.UsuarioDAO;
 import Clases.UsuarioDTO;
 import java.util.List;
@@ -19,12 +21,12 @@ public class Crud extends javax.swing.JFrame {
     /**
      * Creates new form Crud
      */
-    UsuarioDAO usuarioDAO = new UsuarioDAO();
+    AlumnoDAO alumnoDAO = new AlumnoDAO();
 
     public Crud() {
         initComponents();
-        listarUsuarios();
-        btnListar.addActionListener(e -> listarUsuarios());
+        listarAlumnos();
+        btnListar.addActionListener(e -> listarAlumnos());
     }
 
     /**
@@ -40,7 +42,7 @@ public class Crud extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         txtNom = new javax.swing.JTextField();
-        txtPass = new javax.swing.JTextField();
+        txtPromedio = new javax.swing.JTextField();
         btnActualizar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtId = new javax.swing.JTextField();
@@ -54,7 +56,7 @@ public class Crud extends javax.swing.JFrame {
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel2.setText("Contraseña: ");
+        jLabel2.setText("Promedio");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 70, -1));
 
         jLabel1.setText("Nombre: ");
@@ -67,12 +69,12 @@ public class Crud extends javax.swing.JFrame {
         });
         jPanel1.add(txtNom, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 80, 110, -1));
 
-        txtPass.addActionListener(new java.awt.event.ActionListener() {
+        txtPromedio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPassActionPerformed(evt);
+                txtPromedioActionPerformed(evt);
             }
         });
-        jPanel1.add(txtPass, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 130, 110, -1));
+        jPanel1.add(txtPromedio, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 130, 110, -1));
 
         btnActualizar.setText("Actualizar");
         btnActualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -147,43 +149,34 @@ public class Crud extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNomActionPerformed
 
-    private void txtPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPassActionPerformed
+    private void txtPromedioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPromedioActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtPassActionPerformed
+    }//GEN-LAST:event_txtPromedioActionPerformed
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-        if (txtNom.getText().isEmpty() || txtPass.getText().isEmpty()) {
+        if (txtNom.getText().isEmpty() || txtPromedio.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos");
             return;
         }
 
         try {
             String nombre = txtNom.getText();
-            String pass = txtPass.getText();
+            double promedio = Double.parseDouble(txtPromedio.getText());
 
-            // Aseguramos que el nombre no esté vacío
-            if (nombre.isEmpty() || pass.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El nombre es obligatorio");
                 return;
             }
 
-            // Creamos el usuario
-            UsuarioDTO usuario = new UsuarioDTO(0, nombre, pass); // Asumimos que el ID se genera automáticamente en la BD
+            AlumnoDTO alumno = new AlumnoDTO(0, nombre, promedio); // ID se autogenera
 
-            // Verificamos si el usuario ya existe (esto es opcional pero útil)
-            if (usuarioDAO.existeUsuario(nombre)) {
-                JOptionPane.showMessageDialog(null, "El usuario ya existe");
-                return;
-            }
+            // Inserta el alumno en la base de datos
+            alumnoDAO.insertar(alumno);
 
-            // Intentamos insertar el usuario
-            if (usuarioDAO.insertarUsuario(usuario)) {
-                JOptionPane.showMessageDialog(null, "Usuario creado correctamente");
-                listarUsuarios(); // Actualiza la tabla de usuarios
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al crear el usuario");
-            }
-
+            JOptionPane.showMessageDialog(null, "Alumno creado correctamente");
+            listarAlumnos(); // Método que actualiza la tabla
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Ingrese un valor numérico válido para el promedio");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Error en la creación: " + ex.getMessage());
         }
@@ -192,35 +185,30 @@ public class Crud extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        if (txtId.getText().isEmpty() && txtNom.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Ingrese ID o nombre para actualizar");
+        if (txtId.getText().isEmpty() || txtNom.getText().isEmpty() || txtPromedio.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione un alumno y complete todos los campos");
             return;
         }
 
         try {
-            int id = txtId.getText().isEmpty() ? -1 : Integer.parseInt(txtId.getText());
+            int id = Integer.parseInt(txtId.getText());
             String nombre = txtNom.getText();
-            String pass = txtPass.getText();
+            double promedio = Double.parseDouble(txtPromedio.getText());
 
-            if (nombre.isEmpty() || pass.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos");
-                return;
-            }
+            AlumnoDTO alumno = new AlumnoDTO(id, nombre, promedio);
 
-            UsuarioDTO usuario = new UsuarioDTO(id, nombre, pass);
+            AlumnoDAO dao = new AlumnoDAO();
+            dao.actualizar(alumno);
 
-            if (usuarioDAO.actualizarUsuarioPorIdONombre(usuario)) {
-                JOptionPane.showMessageDialog(null, "Usuario actualizado correctamente");
-                listarUsuarios(); // Actualiza la tabla
-            } else {
-                JOptionPane.showMessageDialog(null, "No se encontró el usuario o no se pudo actualizar");
-            }
+            JOptionPane.showMessageDialog(null, "Alumno actualizado correctamente");
+            listarAlumnos(); // Refresca la tabla
+            limpiarCampos(); // Limpia los campos
 
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "ID no válido");
+            JOptionPane.showMessageDialog(null, "ID o Promedio inválidos");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Error al actualizar: " + ex.getMessage());
         }
-
-        limpiarCampos();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
@@ -232,27 +220,7 @@ public class Crud extends javax.swing.JFrame {
     }//GEN-LAST:event_btnListarActionPerformed
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
-        if (txtId.getText().isEmpty() && txtNom.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Ingrese ID o nombre para eliminar");
-            return;
-        }
-
-        try {
-            int id = txtId.getText().isEmpty() ? -1 : Integer.parseInt(txtId.getText());
-            String nombre = txtNom.getText();
-
-            if (usuarioDAO.eliminarUsuarioPorIdONombre(id, nombre)) {
-                JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente");
-                listarUsuarios(); // Actualiza la tabla
-            } else {
-                JOptionPane.showMessageDialog(null, "No se encontró el usuario o no se pudo eliminar");
-            }
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "ID inválido");
-        }
-
-        limpiarCampos();
+        
     }//GEN-LAST:event_btnBorrarActionPerformed
 
     /**
@@ -290,22 +258,27 @@ public class Crud extends javax.swing.JFrame {
         });
     }
 
-    public void listarUsuarios() {
+    public void listarAlumnos() {
         DefaultTableModel modelo = (DefaultTableModel) miTabla.getModel();
-        modelo.setRowCount(0); // limpia la tabla
+        modelo.setRowCount(0); // Limpia la tabla
 
-        UsuarioDAO dao = new UsuarioDAO();
-        List<UsuarioDTO> lista = dao.obtenerUsuarios();
+        AlumnoDAO dao = new AlumnoDAO();
+        List<AlumnoDTO> lista;
 
-        for (UsuarioDTO u : lista) {
-            modelo.addRow(new Object[]{u.getId(), u.getNombre(), u.getContraseña()});
+        try {
+            lista = dao.listar();
+            for (AlumnoDTO a : lista) {
+                modelo.addRow(new Object[]{a.getId(), a.getNombre(), a.getPromedio()});
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Error al listar alumnos: " + ex.getMessage());
         }
     }
 
     public void limpiarCampos() {
         txtId.setText("");
         txtNom.setText("");
-        txtPass.setText("");
+        txtPromedio.setText("");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -321,6 +294,6 @@ public class Crud extends javax.swing.JFrame {
     private javax.swing.JTable miTabla;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtNom;
-    private javax.swing.JTextField txtPass;
+    private javax.swing.JTextField txtPromedio;
     // End of variables declaration//GEN-END:variables
 }
